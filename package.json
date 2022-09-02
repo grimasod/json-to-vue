@@ -12,7 +12,7 @@
       "require": "./dist/json-to-vue.umd.cjs"
     }
   },
-  "version": "0.0.1-alpha.11",
+  "version": "0.0.1-alpha.12",
   "description": "Generate Vue from JSON",
   "author": "David Grimason <davidgrimason@gmail.com> (https://circleoflifecycle.com/)",
   "license": "MIT",

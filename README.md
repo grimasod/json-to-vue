@@ -15,9 +15,21 @@ or
 
 2 ways to use
 
+1. Using the provided component
+2. Writing your own component and using the composable
+
+---
+
 ### 1. Component
 
-Example
+This is the easiest way to use this package, but can only use globally registered components, that can be accessed by [resolveComponent](https://vuejs.org/api/render-function.html#resolvecomponent)
+
+Use this technique if
+- you don't need to use any components at all
+- or you only use a few components that you can register globally
+- or if all the components are installed by a library.
+
+Example:
 
 ```
 <template>
@@ -34,8 +46,15 @@ const cmsContent = ref(getContent('global'))
 
 </script>
 ```
+---
 
 ### 2. Composables
+
+With this technique you need to make your own render function component. This enables you to import all the components to be used inside the generated component.
+
+This can be done using standaed component imports, but those components must be registered with JsonToVue using `registerComponents`.
+
+Example:
 
 MyCMS.js
 ```
@@ -78,7 +97,7 @@ const { getContent } = useCms()
 const cmsContent = ref(getContent('local'))
 ```
 
-#### Composables with dynamic imports
+Alternatively, you can use dynamic imports by traversing the JSON content and extracting the component names. They still need to be registered with JsonToVue using `registerComponents`
 
 ```
 import { defineAsyncComponent } from 'vue'
