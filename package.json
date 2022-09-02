@@ -1,0 +1,29 @@
+{
+  "name": "json-to-vue",
+  "type": "module",
+  "files": ["dist"],
+  "main": "./dist/json-to-vue.umd.cjs",
+  "module": "./dist/json-to-vue.js",
+  "exports": {
+    ".": {
+      "import": "./dist/json-to-vue.js",
+      "require": "./dist/json-to-vue.umd.cjs"
+    }
+  },
+  "version": "0.0.1-alpha.11",
+  "description": "Generate Vue from JSON",
+  "author": "David Grimason <davidgrimason@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.2.37"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^3.0.3",
+    "vite": "^3.0.7"
+  }
+}
