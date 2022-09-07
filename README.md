@@ -1,8 +1,8 @@
 # JSON to Vue
 
-Generates Vue components from JSON by using the render function.
+Generates Vue nodes and components from JSON by using the render function.
 
-## Install
+## Installation
 
 `npm install json-to-vue`
 
@@ -11,23 +11,23 @@ or
 `yarn add json-to-vue`
 
 
-## Use 
+## How to Use 
 
-2 ways to use
+There are 2 ways to use this package:
 
-1. Using the provided component
-2. Writing your own component and using the composable
+1. Basic - Using the provided component
+2. Advanced - Using the composable and writing your own component 
 
 ---
 
-### 1. Component
+### 1. Basic - Using the provided component
 
 This is the easiest way to use this package, but can only use globally registered components, that can be accessed by [resolveComponent](https://vuejs.org/api/render-function.html#resolvecomponent)
 
 Use this technique if
 - you don't need to use any components at all
-- or you only use a few components that you can register globally
-- or if all the components are installed by a library.
+- or you only use components that you have registered globally
+- or if all the components are installed by a library
 
 Example:
 
@@ -46,15 +46,233 @@ const cmsContent = ref(getContent('global'))
 
 </script>
 ```
+
+### The data
+
+The `json` attrbiute must be in the following data structure:
+
+- The top level and every "children" property must be an array.
+- Each item of the array must contain either:
+  - a text string (and nothing else) or
+  - an object which defines an HTML element
+
+An absolute minimal example is:
+
+```
+['Some text to display']
+```
+
+And a very simple example is:
+
+```
+[
+  {
+    children: ['One bit of text']
+  },
+  {
+    children: ['Another bit of text']
+  }
+]
+```
+
+Each "child" will be displayed in a HMTL element, a div by default. So the above example would create 2 divs. To set the element type, just add the "element" proprty. For example:
+
+
+```
+[
+  {
+    children: ['This is a div']
+  },
+  {
+    element: 'span',
+    children: ['This is a span']
+  },
+  {
+    element: 'h1',
+    children: ['This is a H1 heading']
+  }
+]
+```
+
+To nest elements, just add further children. Notice how both text and further elements can exist as siblings, as in the third list item.
+
+
+```
+[
+  {
+    element: 'ul',
+    children: [
+      {
+        element: 'li',
+        children: ['First item in a list']
+      },
+      {
+        element: 'li',
+        children: ['Second item in a list']
+      },
+      {
+        element: 'li',
+        children: [
+          'Third item in a list ',
+          {
+            element: 'span',
+            children: ['with a span within it']
+          },
+          '.'
+        ]
+      }
+    ]
+  }
+]
+```
+
+Attrbiutes can be added to any element.
+
+```
+[
+  {
+    element: 'section',
+    attributes: {
+      id: 'xyz',
+      class: 'italic text-green-600 font-bold text-lg'
+    },
+    children: ['This is a section with an id and CSS classes']
+  }
+]
+```
+
+Which means we can include images and links.
+
+```
+[
+  {
+    element: 'img',
+    attributes: {
+      src: 'https://picsum.photos/200/300',
+      class: 'border border-3 border-red-200 hover:border-red-600'
+    }
+  },
+  {
+    element: 'cite',
+    children: [
+      'This image is from ',
+      {
+        element: 'a',
+        attributes: {
+          href: 'https://picsum.photos/',
+          target: '_blank',
+          class: 'underline text-blue-600'
+        },
+        children: [
+          'Lorem Picsum'
+        ]
+      }
+    ]
+  }
+]
+```
+
+We can also render components, using the `component` property. In this case, the children are used as component slots.
+
+*Keep in mind that with provided the `<JsonToVue>` component, we can only use components that are globally registered with `app.component` or by another package or library. For working with locally registered components, see the next section.*
+
+In the first example below, we use the `router-link` component, which is globally available after installing and configuring [Vue Router](https://router.vuejs.org/).
+
+We pass in the `to` attribute to define the internal link.
+
+
+```
+[
+  {
+    component: 'router-link',
+    attributes: {
+      to: { name: 'my-page' },
+      class: 'underline text-blue-600'
+    },
+    children: [
+      'Go to My Page'
+    ]
+  }
+]
+```
+
+In the above case there's only one child, which becomes the default slot content.
+
+We can add a `slot` property to use mulitple slots. All children that have no slot property or have `slot: 'default'` will be combined into the default slot.
+
+```
+[
+  {
+    component: 'MyGlobalFoo',
+    children: [
+      {
+        children: ['Default slot first child']
+      },
+      {
+        slot: 'default',
+        children: ['Default slot second child']
+      },
+      {
+        slot: 'other',
+        children: ['Other slot']
+      }
+    ]
+  }
+]
+```
+
+Further children can also be included within a slot, and they'll be rendered in the same way as any other children.
+
+```
+[
+  {
+    component: 'MyGlobalFoo',
+    children: [
+      {
+        slot: 'default',
+        element: 'ul',
+        children: [
+          {
+            element: 'li',
+            children: ['First grandchild of the component']
+          },
+          {
+            element: 'li',
+            children: ['Second grandchild of the component']
+          }
+        ]
+      }
+    ]
+  }
+]
+```
+
+We can also use other components in the slots. Meaning we can nest components to any depth.
+
+```
+[
+  {
+    component: 'MyGlobalFoo',
+    children: [
+      {
+        component: 'MyGlobalBar',
+        children: ['Bar Compnent default slot content']
+      }
+    ]
+  }
+]
+```
+
+
 ---
 
-### 2. Composables
+### 2. Advanced - Using the composable and writing your own component 
 
-With this technique you need to make your own render function component. This enables you to import all the components to be used inside the generated component.
+With this technique you need to make your own render function component. This lets you to import the specific components to be used.
 
-This can be done using standaed component imports, but those components must be registered with JsonToVue using `registerComponents`.
+Imported components must be registered with JsonToVue using `registerComponents`.
 
-Example:
+Here's an example using standard component imports.
 
 MyCMS.js
 ```
@@ -97,8 +315,15 @@ const { getContent } = useCms()
 const cmsContent = ref(getContent('local'))
 ```
 
-Alternatively, you can use dynamic imports by traversing the JSON content and extracting the component names. They still need to be registered with JsonToVue using `registerComponents`
+Alternatively, if you have a lot of components and want to use dynamic imports, that can be done by traversing the JSON content and extracting the component names. 
 
+Those components still need to be registered with JsonToVue using `registerComponents`
+
+In this example, we use [`defineAsyncComponent`](https://vuejs.org/api/general.html#defineasynccomponent), which has certain [limitations](https://github.com/rollup/plugins/tree/master/packages/dynamic-import-vars#limitations) when dynamic imports contain a concatenated string.
+
+In this case, we only dynamically import components that are in a `library` subdirectory of the components folder that this file is located in.
+
+MyCMSDynamicImports.js
 ```
 import { defineAsyncComponent } from 'vue'
 import { useJsonToVue } from 'json-to-vue'
