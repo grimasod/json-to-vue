@@ -223,7 +223,7 @@ We can add a `slot` property to use multiple slots. All children that have no sl
 ]
 ```
 
-Further children can also be included within a slot, and they'll be rendered in the same way as any other children.
+Further `children` can also be included within a slot, and they'll be rendered in the same way as any other children.
 
 ```
 [
@@ -276,7 +276,7 @@ Our component needs to do two things in the `setup()` hook.
 
 First, any imported components must be registered with JsonToVue using `registerComponents` .
 
-Then `setup()` returns the `generate()` funtion, as described in the [Declaring Render Functions](https://vuejs.org/guide/extras/render-function.html#declaring-render-functions) documentation.
+Then `setup()` returns the `generate()` function, as described in the [Declaring Render Functions](https://vuejs.org/guide/extras/render-function.html#declaring-render-functions) documentation.
 
 Here's an example using standard component imports.
 
@@ -323,7 +323,7 @@ const cmsContent = ref(getContent('local'))
 
 Alternatively, if you have a lot of components and want to use dynamic imports, that can be done by traversing the JSON content and extracting the component names. 
 
-Those components still need to be registered with JsonToVue using `registerComponents`
+Those components still need to be registered with JsonToVue using `registerComponents`.
 
 In this example, we use [`defineAsyncComponent`](https://vuejs.org/api/general.html#defineasynccomponent), which has certain [limitations](https://github.com/rollup/plugins/tree/master/packages/dynamic-import-vars#limitations) when dynamic imports contain a concatenated string.
 
