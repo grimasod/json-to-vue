@@ -1,6 +1,6 @@
 # JSON to Vue
 
-Generates Vue nodes and components from JSON by using the render function.
+Generates Vue nodes and components from a data object that can be created from JSON.
 
 ## Installation
 
@@ -25,15 +25,15 @@ There are 2 ways to use this package:
 This is the easiest way to use this package, but can only use globally registered components, that can be accessed by [resolveComponent](https://vuejs.org/api/render-function.html#resolvecomponent)
 
 Use this technique if
-- you don't need to use any components at all
-- or you only use components that you have registered globally
-- or if all the components are installed by a library
+- You don't need to use any components at all
+- Or you only use components that you have registered globally
+- Or if all the components are installed by a library
 
 Example:
 
 ```
 <template>
-  <JsonToVue :json="cmsContent" />
+  <JsonToVue :content="cmsContent" />
 </template>
 
 <script setup>
@@ -49,12 +49,14 @@ const cmsContent = ref(getContent('global'))
 
 ### The data
 
-The `json` attrbiute must be in the following data structure:
+Despite the name of this package, a JavaScript Array must be provided as the single attribute. It does not take a JSON string directly. In many cases JSON will be automatically converted to a JavaScript data structure anyway. When that's not the case, it can be converted using [JSON.parse()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)
 
-- The top level and every "children" property must be an array.
+The `content` attribute must be in the following format:
+
+- The top level and every `children` property must be an array.
 - Each item of the array must contain either:
-  - a text string (and nothing else) or
-  - an object which defines an HTML element
+  - A text string (and nothing else) or
+  - An object which is used to define an HTML element
 
 An absolute minimal example is:
 
@@ -75,7 +77,7 @@ And a very simple example is:
 ]
 ```
 
-Each "child" will be displayed in a HMTL element, a div by default. So the above example would create 2 divs. To set the element type, just add the "element" proprty. For example:
+Each child will be displayed in an HMTL element, a div by default. So the above example would create 2 divs. To set the element type, just add the `element` property. For example:
 
 
 ```
@@ -126,7 +128,7 @@ To nest elements, just add further children. Notice how both text and further el
 ]
 ```
 
-Attrbiutes can be added to any element.
+Attributes can be added to any element.
 
 ```
 [
@@ -141,7 +143,7 @@ Attrbiutes can be added to any element.
 ]
 ```
 
-Which means we can include images and links.
+This means we can include images and links.
 
 ```
 [
@@ -174,11 +176,11 @@ Which means we can include images and links.
 
 We can also render components, using the `component` property. In this case, the children are used as component slots.
 
-*Keep in mind that with provided the `<JsonToVue>` component, we can only use components that are globally registered with `app.component` or by another package or library. For working with locally registered components, see the next section.*
+*Keep in mind that with provided the `<JsonToVue>` component, we can only use components that are globally registered with `app.component()` or by another package or library. For working with locally registered components, see the next section.*
 
 In the first example below, we use the `router-link` component, which is globally available after installing and configuring [Vue Router](https://router.vuejs.org/).
 
-We pass in the `to` attribute to define the internal link.
+We provide the `to` attribute to define the internal link.
 
 
 ```
@@ -198,7 +200,7 @@ We pass in the `to` attribute to define the internal link.
 
 In the above case there's only one child, which becomes the default slot content.
 
-We can add a `slot` property to use mulitple slots. All children that have no slot property or have `slot: 'default'` will be combined into the default slot.
+We can add a `slot` property to use multiple slots. All children that have no slot property or have `slot: 'default'` will be combined into the default slot.
 
 ```
 [
@@ -270,7 +272,11 @@ We can also use other components in the slots. Meaning we can nest components to
 
 With this technique you need to make your own render function component. This lets you to import the specific components to be used.
 
-Imported components must be registered with JsonToVue using `registerComponents`.
+Our component needs to do two things in the `setup()` hook.
+
+First, any imported components must be registered with JsonToVue using `registerComponents` .
+
+Then `setup()` returns the `generate()` funtion, as described in the [Declaring Render Functions](https://vuejs.org/guide/extras/render-function.html#declaring-render-functions) documentation.
 
 Here's an example using standard component imports.
 
@@ -285,7 +291,7 @@ const { generate, registerComponents } = useJsonToVue()
 export default {
   name: 'MyCMS',
   props: {
-    json: {
+    content: {
       type: Object,
       required: true
     }
@@ -295,7 +301,7 @@ export default {
       MyLocalFoo,
       MyLocalBar
     })
-    return () => generate(props.json)
+    return () => generate(props.content)
   }
 }
 ```
@@ -303,7 +309,7 @@ export default {
 Usage
 ```
 <template>
-  <MyCMS :json="cmsContent" />
+  <MyCMS :content="cmsContent" />
 </template>
 
 <script setup>
@@ -349,15 +355,15 @@ const getAsyncComponents = (content) => {
 export default {
   name: 'MyCMS',
   props: {
-    json: {
+    content: {
       type: Object,
       required: true
     }
   },
   setup (props) {
-    getAsyncComponents(props.json)
+    getAsyncComponents(props.content)
     registerComponents(asyncComponents)
-    return () => generate(props.json)
+    return () => generate(props.content)
   }
 }
 ```
@@ -365,7 +371,7 @@ export default {
 Usage
 ```
 <template>
-  <MyCMSDynamic :json="cmsContent" />
+  <MyCMSDynamic :content="cmsContent" />
 </template>
 
 <script setup>
