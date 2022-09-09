@@ -47,7 +47,7 @@ Use this technique if:
 
 Example:
 
-```vue
+```html
 <template>
   <JsonToVue :content="cmsContent" />
 </template>
@@ -63,6 +63,17 @@ const cmsContent = ref(getContent('global'))
 </script>
 ```
 
+The component can be used multiple times.
+
+```html
+<template>
+  <JsonToVue :content="cmsContent1" />
+  <JsonToVue :content="cmsContent2" />
+</template>
+```
+
+---
+
 ### The data
 
 Despite the name of this package, a JavaScript Array must be provided as the single attribute. It does not take a JSON string directly. In many cases JSON will be automatically converted to a JavaScript data structure anyway. When that's not the case, it can be converted using [JSON.parse()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)
@@ -77,7 +88,7 @@ The `content` attribute must be in the following format:
 An absolute minimal example is:
 
 ```json
-['Some text to display']
+["Some text to display"]
 ```
 
 And a very simple example is:
@@ -85,10 +96,10 @@ And a very simple example is:
 ```json
 [
   {
-    children: ['One bit of text']
+    "children": ["One bit of text"]
   },
   {
-    children: ['Another bit of text']
+    "children": ["Another bit of text"]
   }
 ]
 ```
@@ -99,15 +110,15 @@ Each child will be displayed in an HMTL element, a div by default. So the above 
 ```json
 [
   {
-    children: ['This is a div']
+    "children": ["This is a div"]
   },
   {
-    element: 'span',
-    children: ['This is a span']
+    "element": "span",
+    "children": ["This is a span"]
   },
   {
-    element: 'h1',
-    children: ['This is a H1 heading']
+    "element": "h1",
+    "children": ["This is a H1 heading"]
   }
 ]
 ```
@@ -118,25 +129,25 @@ To nest elements, just add further children. Notice how both text and further el
 ```json
 [
   {
-    element: 'ul',
-    children: [
+  "element": "ul",
+  "children": [
       {
-        element: 'li',
-        children: ['First item in a list']
+        "element": "li",
+        "children": ["First item in a list"]
       },
       {
-        element: 'li',
-        children: ['Second item in a list']
+        "element": "li",
+        "children": ["Second item in a list"]
       },
       {
-        element: 'li',
-        children: [
-          'Third item in a list ',
+        "element": "li",
+        "children": [
+          "Third item in a list ",
           {
-            element: 'span',
-            children: ['with a span within it']
+            "element": "span",
+            "children": ["with a span within it"]
           },
-          '.'
+          "."
         ]
       }
     ]
@@ -149,12 +160,12 @@ Attributes can be added to any element.
 ```json
 [
   {
-    element: 'section',
-    attributes: {
-      id: 'xyz',
-      class: 'italic text-green-600 font-bold text-lg'
+    "element": "section",
+    "attributes": {
+      "id": "xyz",
+      "class": "italic text-green-600 font-bold text-lg"
     },
-    children: ['This is a section with an id and CSS classes']
+    "children": ["This is a section with an id and CSS classes"]
   }
 ]
 ```
@@ -164,25 +175,25 @@ This means we can include images and links.
 ```json
 [
   {
-    element: 'img',
-    attributes: {
-      src: 'https://picsum.photos/200/300',
-      class: 'border border-3 border-red-200 hover:border-red-600'
+    "element": "img",
+    "attributes": {
+      "src": "https://picsum.photos/200/300",
+      "class": "border border-3 border-red-200 hover:border-red-600"
     }
   },
   {
-    element: 'cite',
-    children: [
-      'This image is from ',
+    "element": "cite",
+    "children": [
+      "This image is from ",
       {
-        element: 'a',
-        attributes: {
-          href: 'https://picsum.photos/',
-          target: '_blank',
-          class: 'underline text-blue-600'
+        "element": "a",
+        "attributes": {
+          "href": "https://picsum.photos/",
+          "target": "_blank",
+          "class": "underline text-blue-600"
         },
-        children: [
-          'Lorem Picsum'
+        "children": [
+          "Lorem Picsum"
         ]
       }
     ]
@@ -201,13 +212,13 @@ We provide the `to` attribute to define the internal link.
 ```json
 [
   {
-    component: 'router-link',
-    attributes: {
-      to: { name: 'my-page' },
-      class: 'underline text-blue-600'
+    "component": "router-link",
+    "attributes": {
+      "to": { "name": "composable" },
+      "class": "underline text-blue-600"
     },
-    children: [
-      'Go to My Page'
+    "children": [
+      "Composable page"
     ]
   }
 ]
@@ -220,18 +231,18 @@ We can add a `slot` property to use multiple slots. All children that have no sl
 ```json
 [
   {
-    component: 'MyGlobalFoo',
-    children: [
+    "component": "MyGlobalFoo",
+    "children": [
       {
-        children: ['Default slot first child']
+        "children": ["Default slot first child"]
       },
       {
-        slot: 'default',
-        children: ['Default slot second child']
+        "slot": "default",
+        "children": ["Default slot second child"]
       },
       {
-        slot: 'other',
-        children: ['Other slot']
+        "slot": "other",
+        "children": ["Other slot"]
       }
     ]
   }
@@ -243,19 +254,19 @@ Further `children` can also be included within a slot, and they'll be rendered i
 ```json
 [
   {
-    component: 'MyGlobalFoo',
-    children: [
+    "component": "MyGlobalFoo",
+    "children": [
       {
-        slot: 'default',
-        element: 'ul',
-        children: [
+        "slot": "default",
+        "element": "ul",
+        "children": [
           {
-            element: 'li',
-            children: ['First grandchild of the component']
+            "element": "li",
+            "children": ["First grandchild of the component"]
           },
           {
-            element: 'li',
-            children: ['Second grandchild of the component']
+            "element": "li",
+            "children": ["Second grandchild of the component"]
           }
         ]
       }
@@ -269,11 +280,11 @@ We can also use other components in the slots. Meaning we can nest components to
 ```json
 [
   {
-    component: 'MyGlobalFoo',
-    children: [
+    "component": "MyGlobalFoo",
+    "children": [
       {
-        component: 'MyGlobalBar',
-        children: ['Bar Compnent default slot content']
+        "component": "MyGlobalBar",
+        "children": ["Bar Compnent default slot content"]
       }
     ]
   }
