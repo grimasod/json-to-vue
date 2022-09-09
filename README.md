@@ -1,6 +1,21 @@
 # JSON to Vue
 
-Generates Vue nodes and components from a data object that can be created from JSON.
+Generates a Vue template from a data object constructed from JSON. The generated template can contain further templates and components too, nested to any depth.
+
+Possible use cases:
+
+- To display content fetched from a CMS.
+- To add content stored in `.json` files to a small website. 
+
+---
+
+**Important: Never include user generated content.**
+
+When using this package (or doing anythings else in Vue.js), always follow the [security guidelines](https://vuejs.org/guide/best-practices/security.html).
+
+> The most straightforward way [to avoid potential malicious code execution] is to make sure the contents of your Vue templates are always trusted and entirely controlled by you.
+
+---
 
 ## Installation
 
@@ -24,14 +39,15 @@ There are 2 ways to use this package:
 
 This is the easiest way to use this package, but can only use globally registered components, that can be accessed by [resolveComponent](https://vuejs.org/api/render-function.html#resolvecomponent)
 
-Use this technique if
+Use this technique if:
 - You don't need to use any components at all
-- Or you only use components that you have registered globally
-- Or if all the components are installed by a library
+- Or you only use components that:
+  - You registered globally
+  - Or are installed by a library or other package
 
 Example:
 
-```
+```vue
 <template>
   <JsonToVue :content="cmsContent" />
 </template>
@@ -60,13 +76,13 @@ The `content` attribute must be in the following format:
 
 An absolute minimal example is:
 
-```
+```json
 ['Some text to display']
 ```
 
 And a very simple example is:
 
-```
+```json
 [
   {
     children: ['One bit of text']
@@ -80,7 +96,7 @@ And a very simple example is:
 Each child will be displayed in an HMTL element, a div by default. So the above example would create 2 divs. To set the element type, just add the `element` property. For example:
 
 
-```
+```json
 [
   {
     children: ['This is a div']
@@ -99,7 +115,7 @@ Each child will be displayed in an HMTL element, a div by default. So the above 
 To nest elements, just add further children. Notice how both text and further elements can exist as siblings, as in the third list item.
 
 
-```
+```json
 [
   {
     element: 'ul',
@@ -130,7 +146,7 @@ To nest elements, just add further children. Notice how both text and further el
 
 Attributes can be added to any element.
 
-```
+```json
 [
   {
     element: 'section',
@@ -145,7 +161,7 @@ Attributes can be added to any element.
 
 This means we can include images and links.
 
-```
+```json
 [
   {
     element: 'img',
@@ -182,8 +198,7 @@ In the first example below, we use the `router-link` component, which is globall
 
 We provide the `to` attribute to define the internal link.
 
-
-```
+```json
 [
   {
     component: 'router-link',
@@ -202,7 +217,7 @@ In the above case there's only one child, which becomes the default slot content
 
 We can add a `slot` property to use multiple slots. All children that have no slot property or have `slot: 'default'` will be combined into the default slot.
 
-```
+```json
 [
   {
     component: 'MyGlobalFoo',
@@ -225,7 +240,7 @@ We can add a `slot` property to use multiple slots. All children that have no sl
 
 Further `children` can also be included within a slot, and they'll be rendered in the same way as any other children.
 
-```
+```json
 [
   {
     component: 'MyGlobalFoo',
@@ -251,7 +266,7 @@ Further `children` can also be included within a slot, and they'll be rendered i
 
 We can also use other components in the slots. Meaning we can nest components to any depth.
 
-```
+```json
 [
   {
     component: 'MyGlobalFoo',
@@ -281,7 +296,8 @@ Then `setup()` returns the `generate()` function, as described in the [Declaring
 Here's an example using standard component imports.
 
 MyCMS.js
-```
+
+```javascript
 import { useJsonToVue } from 'json-to-vue'
 import MyLocalFoo from '@/components/MyLocalFoo.vue'
 import MyLocalBar from '@/components/MyLocalBar.vue'
@@ -307,7 +323,8 @@ export default {
 ```
 
 Usage
-```
+
+```html
 <template>
   <MyCMS :content="cmsContent" />
 </template>
@@ -330,7 +347,8 @@ In this example, we use [`defineAsyncComponent`](https://vuejs.org/api/general.h
 In this case, we only dynamically import components that are in a `library` subdirectory of the components folder that this file is located in.
 
 MyCMSDynamicImports.js
-```
+
+```javascript
 import { defineAsyncComponent } from 'vue'
 import { useJsonToVue } from 'json-to-vue'
 
@@ -369,7 +387,8 @@ export default {
 ```
 
 Usage
-```
+
+```html
 <template>
   <MyCMSDynamic :content="cmsContent" />
 </template>
