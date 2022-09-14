@@ -9,6 +9,12 @@ Possible use cases:
 
 ---
 
+The below code examples are all available at [github.com/grimasod/json-to-vue-examples](https://github.com/grimasod/json-to-vue-examples).
+
+And they can be seen in action on [json-to-vue.circleoflifecycle.com/](https://json-to-vue.circleoflifecycle.com/)
+
+---
+
 **Important: Never include user generated content.**
 
 When using this package (or doing anythings else in Vue.js), always follow the [security guidelines](https://vuejs.org/guide/best-practices/security.html).
@@ -218,7 +224,7 @@ We provide the `to` attribute to define the internal link.
       "class": "underline text-blue-600"
     },
     "children": [
-      "Composable page"
+      "Example of using the composable"
     ]
   }
 ]
@@ -284,7 +290,7 @@ We can also use other components in the slots. Meaning we can nest components to
     "children": [
       {
         "component": "MyGlobalBar",
-        "children": ["Bar Compnent default slot content"]
+        "children": ["Bar Component default slot content"]
       }
     ]
   }
