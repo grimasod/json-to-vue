@@ -5,13 +5,11 @@ Generates a Vue template from a data object constructed from JSON. The generated
 Possible use cases:
 
 - To display content fetched from a CMS.
-- To add content stored in `.json` files to a small website. 
+- To add content stored in `.json` files to a small website.
 
 ---
 
 The below code examples are all available at [github.com/grimasod/json-to-vue-examples](https://github.com/grimasod/json-to-vue-examples).
-
-And they can be seen in action on [json-to-vue.circleoflifecycle.com/](https://json-to-vue.circleoflifecycle.com/)
 
 ---
 
@@ -31,13 +29,12 @@ or
 
 `yarn add json-to-vue`
 
-
-## How to Use 
+## How to Use
 
 There are 2 ways to use this package:
 
 1. Basic - Using the provided component
-2. Advanced - Using the composable and writing your own component 
+2. Advanced - Using the composable and writing your own component
 
 ---
 
@@ -46,6 +43,7 @@ There are 2 ways to use this package:
 This is the easiest way to use this package, but can only use globally registered components, that can be accessed by [resolveComponent](https://vuejs.org/api/render-function.html#resolvecomponent)
 
 Use this technique if:
+
 - You don't need to use any components at all
 - Or you only use components that:
   - You registered globally
@@ -59,13 +57,12 @@ Example:
 </template>
 
 <script setup>
-import { JsonToVue } from 'json-to-vue'
-import { ref } from 'vue'
-import { useCms } from '@/composables'
+  import { JsonToVue } from "json-to-vue";
+  import { ref } from "vue";
+  import { useCms } from "@/composables";
 
-const { getContent } = useCms()
-const cmsContent = ref(getContent('global'))
-
+  const { getContent } = useCms();
+  const cmsContent = ref(getContent("global"));
 </script>
 ```
 
@@ -112,7 +109,6 @@ And a very simple example is:
 
 Each child will be displayed in an HMTL element, a div by default. So the above example would create 2 divs. To set the element type, just add the `element` property. For example:
 
-
 ```json
 [
   {
@@ -131,12 +127,11 @@ Each child will be displayed in an HMTL element, a div by default. So the above 
 
 To nest elements, just add further children. Notice how both text and further elements can exist as siblings, as in the third list item.
 
-
 ```json
 [
   {
-  "element": "ul",
-  "children": [
+    "element": "ul",
+    "children": [
       {
         "element": "li",
         "children": ["First item in a list"]
@@ -198,9 +193,7 @@ This means we can include images and links.
           "target": "_blank",
           "class": "underline text-blue-600"
         },
-        "children": [
-          "Lorem Picsum"
-        ]
+        "children": ["Lorem Picsum"]
       }
     ]
   }
@@ -209,7 +202,7 @@ This means we can include images and links.
 
 We can also render components, using the `component` property. In this case, the children are used as component slots.
 
-*Keep in mind that with provided the `<JsonToVue>` component, we can only use components that are globally registered with `app.component()` or by another package or library. For working with locally registered components, see the next section.*
+_Keep in mind that with provided the `<JsonToVue>` component, we can only use components that are globally registered with `app.component()` or by another package or library. For working with locally registered components, see the next section._
 
 In the first example below, we use the `router-link` component, which is globally available after installing and configuring [Vue Router](https://router.vuejs.org/).
 
@@ -223,9 +216,7 @@ We provide the `to` attribute to define the internal link.
       "to": { "name": "composable" },
       "class": "underline text-blue-600"
     },
-    "children": [
-      "Example of using the composable"
-    ]
+    "children": ["Example of using the composable"]
   }
 ]
 ```
@@ -297,10 +288,9 @@ We can also use other components in the slots. Meaning we can nest components to
 ]
 ```
 
-
 ---
 
-### 2. Advanced - Using the composable and writing your own component 
+### 2. Advanced - Using the composable and writing your own component
 
 With this technique you need to make your own render function component. This lets you to import the specific components to be used.
 
@@ -315,28 +305,28 @@ Here's an example using standard component imports.
 MyCMS.js
 
 ```javascript
-import { useJsonToVue } from 'json-to-vue'
-import MyLocalFoo from '@/components/MyLocalFoo.vue'
-import MyLocalBar from '@/components/MyLocalBar.vue'
+import { useJsonToVue } from "json-to-vue";
+import MyLocalFoo from "@/components/MyLocalFoo.vue";
+import MyLocalBar from "@/components/MyLocalBar.vue";
 
-const { generate, registerComponents } = useJsonToVue()
+const { generate, registerComponents } = useJsonToVue();
 
 export default {
-  name: 'MyCMS',
+  name: "MyCMS",
   props: {
     content: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (props) {
+  setup(props) {
     registerComponents({
       MyLocalFoo,
-      MyLocalBar
-    })
-    return () => generate(props.content)
-  }
-}
+      MyLocalBar,
+    });
+    return () => generate(props.content);
+  },
+};
 ```
 
 Usage
@@ -355,7 +345,7 @@ const { getContent } = useCms()
 const cmsContent = ref(getContent('local'))
 ```
 
-Alternatively, if you have a lot of components and want to use dynamic imports, that can be done by traversing the JSON content and extracting the component names. 
+Alternatively, if you have a lot of components and want to use dynamic imports, that can be done by traversing the JSON content and extracting the component names.
 
 Those components still need to be registered with JsonToVue using `registerComponents`.
 
@@ -366,41 +356,43 @@ In this case, we only dynamically import components that are in a `library` subd
 MyCMSDynamicImports.js
 
 ```javascript
-import { defineAsyncComponent } from 'vue'
-import { useJsonToVue } from 'json-to-vue'
+import { defineAsyncComponent } from "vue";
+import { useJsonToVue } from "json-to-vue";
 
-const { generate, registerComponents } = useJsonToVue()
+const { generate, registerComponents } = useJsonToVue();
 
-const asyncComponents = {}
+const asyncComponents = {};
 
 const getAsyncComponents = (content) => {
   if (!Array.isArray(content)) {
-    return null
+    return null;
   }
   for (const item of content) {
     if (item.component && !(item.component in asyncComponents)) {
-      asyncComponents[item.component] = defineAsyncComponent(() => import(`./library/${item.component}.vue`))
+      asyncComponents[item.component] = defineAsyncComponent(() =>
+        import(`./library/${item.component}.vue`)
+      );
     }
     if (item.children) {
-      getAsyncComponents(item.children)
+      getAsyncComponents(item.children);
     }
   }
-}
+};
 
 export default {
-  name: 'MyCMS',
+  name: "MyCMS",
   props: {
     content: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (props) {
-    getAsyncComponents(props.content)
-    registerComponents(asyncComponents)
-    return () => generate(props.content)
-  }
-}
+  setup(props) {
+    getAsyncComponents(props.content);
+    registerComponents(asyncComponents);
+    return () => generate(props.content);
+  },
+};
 ```
 
 Usage
@@ -411,12 +403,11 @@ Usage
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useCms } from '@/composables'
-import MyCMSDynamic from '@/components/MyCMSDynamic.js'
+  import { ref } from "vue";
+  import { useCms } from "@/composables";
+  import MyCMSDynamic from "@/components/MyCMSDynamic.js";
 
-const { getContent } = useCms()
-const cmsContent = ref(getContent('dynamic'))
-
+  const { getContent } = useCms();
+  const cmsContent = ref(getContent("dynamic"));
 </script>
 ```

@@ -37,7 +37,7 @@ const demo = ref([
       {
         element: 'a',
         attributes: {
-          href: 'https://json-to-vue.circleoflifecycle.com/',
+          href: 'https://example.com/',
           target: '_blank'
         },
         children: ['Examples']

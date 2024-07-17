@@ -14,7 +14,7 @@
   },
   "version": "1.0.2",
   "description": "Generate Vue from JSON",
-  "author": "David Grimason <davidgrimason@gmail.com> (https://circleoflifecycle.com/)",
+  "author": "David Grimason <davidgrimason@gmail.com>",
   "license": "MIT",
   "scripts": {
     "dev": "vite",
